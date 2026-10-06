@@ -59,6 +59,10 @@ p,li,label,[data-testid="stMarkdownContainer"] { color:var(--white); }
 .stButton > button { border-radius:999px; border:1px solid rgba(212,175,55,.62); background:rgba(25,25,25,.88); color:var(--white); font-weight:700; min-height:2.65rem; transition:filter .15s ease,transform .15s ease; }
 .stButton > button:hover { color:var(--white); filter:brightness(1.08); border-color:var(--cream); transform:translateY(-1px); }
 .stButton > button:focus { box-shadow:0 0 0 .2rem rgba(212,175,55,.3); }
+.st-key-main_navigation { background:rgba(18,18,18,.96); border-bottom:1px solid rgba(255,255,255,.12); padding:.45rem .8rem .15rem; margin:-.5rem -.8rem .8rem; }
+.st-key-main_navigation [data-testid="stHorizontalBlock"] { align-items:center; gap:.5rem; }
+.st-key-main_navigation .stButton > button { min-height:2.25rem; padding:.35rem .7rem; font-size:.88rem; line-height:1.15; white-space:nowrap; }
+.st-key-main_navigation [data-testid="stCaptionContainer"] { padding-top:.2rem; font-size:.74rem; line-height:1.2; }
 .nav-pill { background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); }
 .nav-pill.active { background: rgba(212,175,55,.12); border-color: rgba(212,175,55,.32); }
 .hero { border:1px solid rgba(230,194,128,.2); border-radius:24px; padding:clamp(1.4rem,4vw,3.4rem); background:linear-gradient(120deg,rgba(31,29,25,.96),rgba(21,21,20,.91)); box-shadow:0 22px 65px rgba(0,0,0,.24); }
@@ -126,6 +130,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] { color:var(--cream); }
 .k-chat-message.user strong, .k-chat-message.assistant strong { display:block !important; margin-bottom:.25rem !important; color:#f2d58a !important; }
 @media(max-width:768px) { [data-testid="stMainBlockContainer"]{padding:1rem .75rem calc(2rem + 72px + env(safe-area-inset-bottom))}.hero{padding:1.4rem;border-radius:18px}.hero h1{font-size:2.65rem}.menu-card{min-height:unset;margin-bottom:.25rem}.navhint{font-size:.75rem}.chat-msg{max-width:96%}.st-key-chat_fab_toggle{width:58px !important;height:58px !important;right:16px !important;bottom:calc(16px + env(safe-area-inset-bottom)) !important}.st-key-chat_fab_toggle button{width:58px !important;min-width:58px !important;height:58px !important;min-height:58px !important;max-height:58px !important}[data-testid="stDialog"]{padding:12px 12px calc(86px + env(safe-area-inset-bottom)) !important}[data-testid="stDialog"] > div{width:calc(100vw - 24px) !important;max-width:calc(100vw - 24px) !important;max-height:calc(100dvh - 116px - env(safe-area-inset-bottom)) !important}[data-testid="stDialog"] section[role="dialog"]{right:16px !important;bottom:calc(16px + 58px + 10px + env(safe-area-inset-bottom)) !important;width:calc(100vw - 32px) !important;max-width:calc(100vw - 32px) !important;max-height:calc(100dvh - 144px - env(safe-area-inset-bottom)) !important} }
 @media(max-width:420px) { .topbar{align-items:flex-start;flex-direction:column}.hero h1{font-size:2.25rem}.st-key-chat_fab_toggle{width:56px !important;height:56px !important;right:14px !important;bottom:calc(14px + env(safe-area-inset-bottom)) !important}.st-key-chat_fab_toggle button{width:56px !important;min-width:56px !important;height:56px !important;min-height:56px !important;max-height:56px !important}[data-testid="stDialog"]{padding-left:8px !important;padding-right:8px !important}[data-testid="stDialog"] > div{width:calc(100vw - 16px) !important;max-width:calc(100vw - 16px) !important}[data-testid="stDialog"] section[role="dialog"]{right:8px !important;bottom:calc(14px + 56px + 10px + env(safe-area-inset-bottom)) !important;width:calc(100vw - 16px) !important;max-width:calc(100vw - 16px) !important} }
+@media(max-width:600px) { .st-key-main_navigation { padding:.35rem .5rem .1rem; margin:-.35rem -.5rem .65rem; } .st-key-main_navigation [data-testid="stHorizontalBlock"] { gap:.3rem; } .st-key-main_navigation .stButton > button { min-height:2rem; padding:.25rem .35rem; font-size:.78rem; } .st-key-main_navigation .brandmark { font-size:1rem; } }
 </style>
 """
 
@@ -141,8 +146,6 @@ def init_state() -> None:
         st.session_state.chat_input = ""
     if "main_nav" not in st.session_state:
         st.session_state.main_nav = "Home"
-    if "lava_expanded" not in st.session_state:
-        st.session_state.lava_expanded = False
     if "chat_open" not in st.session_state:
         st.session_state.chat_open = False
 
@@ -420,22 +423,29 @@ try {
  const renderer=new THREE.WebGLRenderer({alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,1.6));renderer.setSize(innerWidth,innerHeight);renderer.outputEncoding=THREE.sRGBEncoding;document.body.appendChild(renderer.domElement);document.getElementById('fallback').style.display='none';
  scene.add(new THREE.AmbientLight(0xffffff,.85));const key=new THREE.PointLight(0xE6C280,2.0,16);key.position.set(3,5,5);scene.add(key);const rim=new THREE.PointLight(0xD4AF37,1.3,14);rim.position.set(-4,2,-3);scene.add(rim);
  const cake=new THREE.Group();scene.add(cake);
- const baked=new THREE.MeshStandardMaterial({color:0x382016,roughness:.82});
- const cakeSide=new THREE.MeshStandardMaterial({color:0x4a291b,roughness:.68});
- const ganache=new THREE.MeshStandardMaterial({color:0x24130f,roughness:.19,metalness:.05});
+  const crumbCanvas=document.createElement('canvas');crumbCanvas.width=512;crumbCanvas.height=256;const ctx=crumbCanvas.getContext('2d');ctx.fillStyle='#4b2819';ctx.fillRect(0,0,512,256);let seed=28;const rand=()=>{seed=(seed*1664525+1013904223)>>>0;return seed/4294967296};
+  for(let i=0;i<18000;i++){const x=rand()*512,y=rand()*256,r=.35+rand()*2.1;ctx.fillStyle=rand()>.53?'rgba(213,150,91,.13)':'rgba(20,9,5,.12)';ctx.beginPath();ctx.ellipse(x,y,r,r*(.35+rand()),0,0,Math.PI*2);ctx.fill()}
+  const crumbMap=new THREE.CanvasTexture(crumbCanvas);crumbMap.wrapS=crumbMap.wrapT=THREE.RepeatWrapping;crumbMap.repeat.set(2,1);crumbMap.anisotropy=8;
+  const baked=new THREE.MeshStandardMaterial({color:0x8b5637,map:crumbMap,roughness:.93});
+  const cakeSide=new THREE.MeshStandardMaterial({color:0x70412b,map:crumbMap,bumpMap:crumbMap,bumpScale:.075,roughness:.91});
+  const ganache=new THREE.MeshPhysicalMaterial({color:0x32140d,roughness:.14,metalness:.02,clearcoat:.6,clearcoatRoughness:.12});
  const plateMat=new THREE.MeshStandardMaterial({color:0xe8e0d0,roughness:.28,metalness:.08});
  const gold=new THREE.MeshStandardMaterial({color:0xD4AF37,metalness:.48,roughness:.26});
  const plate=new THREE.Mesh(new THREE.CylinderGeometry(1.4,1.33,.11,64),plateMat);plate.position.y=-.22;cake.add(plate);
  const plateLine=new THREE.Mesh(new THREE.TorusGeometry(1.25,.018,8,64),gold);plateLine.rotation.x=Math.PI/2;plateLine.position.y=-.16;cake.add(plateLine);
  const base=new THREE.Mesh(new THREE.CylinderGeometry(.82,.9,.12,64),baked);base.position.y=-.105;cake.add(base);
  const body=new THREE.Mesh(new THREE.CylinderGeometry(.79,.89,1.02,64,1,false),cakeSide);body.position.y=.46;cake.add(body);
- const top=new THREE.Mesh(new THREE.CylinderGeometry(.79,.79,.12,64),baked);top.position.y=1.03;cake.add(top);
- const chocolateTop=new THREE.Mesh(new THREE.CylinderGeometry(.78,.78,.045,64),ganache);chocolateTop.position.y=1.11;cake.add(chocolateTop);
- const molten=new THREE.Mesh(new THREE.SphereGeometry(.34,40,28),ganache);molten.scale.set(1,.26,1);molten.position.y=1.145;cake.add(molten);
- const flow=new THREE.Mesh(new THREE.TorusGeometry(.29,.055,14,48),new THREE.MeshStandardMaterial({color:0x603018,roughness:.22}));flow.rotation.x=Math.PI/2;flow.position.y=1.15;cake.add(flow);
- for(let i=0;i<9;i++){const a=i*Math.PI*2/9+.12;const drop=new THREE.Mesh(new THREE.SphereGeometry(1,18,14),ganache);drop.scale.set(.095,.22+(i%3)*.07,.095);drop.position.set(Math.cos(a)*.755,.91-(i%3)*.08,Math.sin(a)*.755);cake.add(drop)}
- const crumbs=new THREE.MeshStandardMaterial({color:0x9a6540,roughness:.92});
- for(let i=0;i<30;i++){const a=i*2.399;const r=.4+(i%7)*.045;const crumb=new THREE.Mesh(new THREE.SphereGeometry(.018+(i%3)*.006,8,6),crumbs);crumb.position.set(Math.cos(a)*r,1.145,Math.sin(a)*r);cake.add(crumb)}
+  const top=new THREE.Mesh(new THREE.CylinderGeometry(.79,.79,.12,64),baked);top.position.y=1.03;cake.add(top);
+  const chocolateTop=new THREE.Mesh(new THREE.CylinderGeometry(.80,.80,.055,64),ganache);chocolateTop.position.y=1.105;cake.add(chocolateTop);
+  const molten=new THREE.Mesh(new THREE.SphereGeometry(.28,40,28),ganache);molten.scale.set(1,.3,1);molten.position.set(-.14,1.15,.05);cake.add(molten);
+  const flow=new THREE.Mesh(new THREE.TorusGeometry(.25,.035,14,48),ganache);flow.rotation.x=Math.PI/2;flow.position.set(-.14,1.15,.05);cake.add(flow);
+  for(let i=0;i<11;i++){const a=i*Math.PI*2/11+.12;const len=[.13,.27,.19,.36,.16,.3,.12,.24,.34,.15,.26][i];const drop=new THREE.Mesh(new THREE.SphereGeometry(1,24,18),ganache);drop.scale.set(.055+(i%3)*.012,len,.055+(i%3)*.012);drop.position.set(Math.cos(a)*.775,1.03-len*.55,Math.sin(a)*.775);cake.add(drop)}
+  const berryMat=new THREE.MeshPhysicalMaterial({color:0xa10e24,roughness:.3,clearcoat:.45});
+  for(let i=0;i<3;i++){const a=2.15+i*.48;const berry=new THREE.Mesh(new THREE.SphereGeometry(.13,24,20),berryMat);berry.scale.set(.82,1.08,.82);berry.position.set(Math.cos(a)*.37,1.22,Math.sin(a)*.37);cake.add(berry);for(let j=0;j<7;j++){const b=j*2.4;const seedDot=new THREE.Mesh(new THREE.SphereGeometry(.009,6,5),new THREE.MeshStandardMaterial({color:0xf5d58c,roughness:.65}));seedDot.position.set(berry.position.x+Math.cos(b)*.09,berry.position.y+(j%3-.8)*.045,berry.position.z+Math.sin(b)*.09);cake.add(seedDot)}}
+  const mint=new THREE.MeshStandardMaterial({color:0x315b32,roughness:.72,side:THREE.DoubleSide});
+  for(let i=0;i<3;i++){const leaf=new THREE.Mesh(new THREE.SphereGeometry(1,16,10),mint);leaf.scale.set(.2,.025,.085);leaf.position.set(-.37+i*.09,1.29,.12+i*.055);leaf.rotation.y=-.5+i*.55;cake.add(leaf)}
+  const crumbs=new THREE.MeshStandardMaterial({color:0x9a6540,roughness:.92});
+  for(let i=0;i<24;i++){const a=i*2.399;const r=.55+(i%5)*.055;const crumb=new THREE.Mesh(new THREE.SphereGeometry(.014+(i%3)*.005,8,6),crumbs);crumb.position.set(Math.cos(a)*r,1.142,Math.sin(a)*r);cake.add(crumb)}
  cake.rotation.z=-.045;
  const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);const t=clock.getElapsedTime();cake.rotation.y=Math.sin(t*.22)*.24;cake.position.y=Math.sin(t*.8)*.035;renderer.render(scene,camera)}animate();
  addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
@@ -450,21 +460,22 @@ def go_to_menu() -> None:
 
 
 def render_header() -> None:
-    brand_col, home_col, menu_col, cart_col = st.columns([2.7, 1.0, 1.0, 1.25], vertical_alignment="center")
-    with brand_col:
-        st.markdown('<div class="brandmark">K-TOWN <span>ROAST</span></div>', unsafe_allow_html=True)
-    with home_col:
-        if st.button("Home", key="nav_home", use_container_width=True):
-            st.session_state.main_nav = "Home"
-    with menu_col:
-        if st.button("Menu", key="nav_menu", use_container_width=True):
-            st.session_state.main_nav = "Menu"
-    with cart_col:
-        cart_count = sum(st.session_state.cart.values()) if st.session_state.cart else 0
-        cart_label = f"Cart ({cart_count})" if cart_count else "Cart"
-        if st.button(cart_label, key="nav_cart", use_container_width=True):
-            st.session_state.main_nav = "Cart"
-    st.caption("Karachi, Pakistan · Coffee, considered.")
+    with st.container(key="main_navigation"):
+        brand_col, home_col, menu_col, cart_col = st.columns([2.7, 1.0, 1.0, 1.25], vertical_alignment="center", gap="small")
+        with brand_col:
+            st.markdown('<div class="brandmark">K-TOWN <span>ROAST</span></div>', unsafe_allow_html=True)
+        with home_col:
+            if st.button("Home", key="nav_home", use_container_width=True):
+                st.session_state.main_nav = "Home"
+        with menu_col:
+            if st.button("Menu", key="nav_menu", use_container_width=True):
+                st.session_state.main_nav = "Menu"
+        with cart_col:
+            cart_count = sum(st.session_state.cart.values()) if st.session_state.cart else 0
+            cart_label = f"Cart ({cart_count})" if cart_count else "Cart"
+            if st.button(cart_label, key="nav_cart", use_container_width=True):
+                st.session_state.main_nav = "Cart"
+        st.caption("Karachi, Pakistan · Coffee, considered.")
 
 
 # Hero Section
@@ -490,10 +501,6 @@ def render_menu() -> None:
                 if st.button("Add to cart", key=f"add_{item['id']}", use_container_width=True):
                     add_to_cart(item["id"])
                     st.toast(f'{item["name"]} added to your cart.')
-                if item["id"] == "lava-cake":
-                    if st.button("View 3D Experience", key="view_3d_lava", use_container_width=True):
-                        st.session_state.lava_expanded = not st.session_state.lava_expanded
-                        st.rerun()
 
 
 # Cart / Checkout
@@ -553,9 +560,9 @@ def dismiss_chat() -> None:
 
 @st.dialog("K-Barista", on_dismiss=dismiss_chat)
 def chat_dialog() -> None:
-    st.markdown('<div class="k-chat-header"><p>Oldest first · scroll down for newer messages</p></div>', unsafe_allow_html=True)
-    with st.container(height=220, border=False, key="chat_history_container"):
-        for message in st.session_state.chat_history[-8:]:
+    st.markdown('<div class="k-chat-header"><p>Newest messages appear first</p></div>', unsafe_allow_html=True)
+    with st.container(height=340, border=False, key="chat_history_container"):
+        for message in reversed(st.session_state.chat_history[-8:]):
             role = message.get("role", "assistant")
             label = "You" if role == "user" else "K-Barista"
             bubble_class = "k-chat-message user" if role == "user" else "k-chat-message assistant"
