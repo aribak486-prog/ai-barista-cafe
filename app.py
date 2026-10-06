@@ -114,7 +114,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] { color:var(--cream); }
 [data-testid="stDialog"] > div,[role="dialog"] { background:rgba(18,18,18,.98) !important; border:1px solid rgba(212,175,55,.28) !important; border-radius:22px !important; box-shadow:0 28px 60px rgba(0,0,0,.5) !important; }
 [data-testid="stDialog"] { align-items:flex-end !important; justify-content:flex-end !important; padding:24px 24px 100px !important; }
 [data-testid="stDialog"] > div { width:min(420px,calc(100vw - 32px)) !important; max-width:calc(100vw - 32px) !important; max-height:calc(100dvh - 136px) !important; margin:0 !important; overflow:hidden !important; }
-[data-testid="stDialog"] section[role="dialog"] { position:fixed !important; inset:auto 24px calc(18px + 64px + 12px + env(safe-area-inset-bottom)) auto !important; width:min(420px,calc(100vw - 32px)) !important; max-width:calc(100vw - 32px) !important; max-height:calc(100dvh - 112px - env(safe-area-inset-bottom)) !important; margin:0 !important; overflow-y:auto !important; }
+[data-testid="stDialog"] section[role="dialog"] { position:fixed !important; inset:auto 24px calc(18px + 64px + 12px + env(safe-area-inset-bottom)) auto !important; left:auto !important; top:auto !important; transform:none !important; width:min(420px,calc(100vw - 32px)) !important; max-width:calc(100vw - 32px) !important; max-height:calc(100dvh - 112px - env(safe-area-inset-bottom)) !important; margin:0 !important; overflow-y:auto !important; }
 [data-testid="stDialog"] [data-testid="stChatInput"] { border:1px solid rgba(230,194,128,.25) !important; border-radius:14px !important; background:#191919 !important; }
 [data-testid="stDialog"] [data-testid="stChatInput"] > div { background-color:#191919 !important; }
 [data-testid="stDialog"] [data-testid="stChatInputTextArea"] { background-color:#191919 !important; color:#F5F5F5 !important; -webkit-text-fill-color:#F5F5F5 !important; caret-color:#E6C280 !important; }
@@ -560,7 +560,7 @@ def dismiss_chat() -> None:
 
 @st.dialog("K-Barista", on_dismiss=dismiss_chat)
 def chat_dialog() -> None:
-    st.markdown('<div class="k-chat-header"><p>Your latest reply stays in view</p></div>', unsafe_allow_html=True)
+    st.markdown('<div class="k-chat-header"><p>Earlier messages above · latest reply below</p></div>', unsafe_allow_html=True)
     history = st.session_state.chat_history[-8:]
     latest_pair = history[-2:] if len(history) >= 2 and history[-1].get("role") == "assistant" and history[-2].get("role") == "user" else history[-1:]
     earlier_messages = history[:-len(latest_pair)]
@@ -571,13 +571,12 @@ def chat_dialog() -> None:
         bubble_class = "k-chat-message user" if role == "user" else "k-chat-message assistant"
         st.markdown(f'<div class="{bubble_class}"><strong>{html.escape(label)}</strong>{html.escape(str(message.get("text", "")))}</div>', unsafe_allow_html=True)
 
+    if earlier_messages:
+        with st.container(height=150, border=False, key="chat_history_container"):
+            for message in earlier_messages:
+                render_message(message)
     for message in latest_pair:
         render_message(message)
-    if earlier_messages:
-        st.markdown('<div class="k-chat-header"><p>Earlier messages</p></div>', unsafe_allow_html=True)
-        with st.container(height=150, border=False, key="chat_history_container"):
-            for message in reversed(earlier_messages):
-                render_message(message)
     prompt = st.chat_input("Ask K-Barista")
     if prompt:
         handle_chat_prompt(prompt)
