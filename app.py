@@ -4,6 +4,10 @@ from __future__ import annotations
 
 import html
 import re
+import sqlite3
+import tempfile
+from contextlib import closing
+from uuid import uuid4
 from pathlib import Path
 from typing import Any
 
@@ -16,6 +20,7 @@ st.set_page_config(page_title="K-Town Roast | Karachi", page_icon="☕", layout=
 BRAND = "K-Town Roast"
 TAX_RATE = 0.05
 ASSET_DIR = Path(__file__).resolve().parent / "assets"
+CHAT_DB_PATH = Path(tempfile.gettempdir()) / "ktown_roast_chat.sqlite3"
 
 # Menu Data
 MENU: dict[str, list[dict[str, Any]]] = {
@@ -137,11 +142,50 @@ div[data-testid="stTabs"] button[aria-selected="true"] { color:var(--cream); }
 
 # Session State
 
+def load_chat_history(session_id: str) -> list[dict[str, str]]:
+    with closing(sqlite3.connect(CHAT_DB_PATH, timeout=10)) as connection:
+        with connection:
+            connection.execute(
+                "CREATE TABLE IF NOT EXISTS chat_messages ("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, "
+                "role TEXT NOT NULL, message TEXT NOT NULL)"
+            )
+            rows = connection.execute(
+                "SELECT role, message FROM chat_messages WHERE session_id = ? ORDER BY id",
+                (session_id,),
+            ).fetchall()
+    return [{"role": role, "text": message} for role, message in rows]
+
+
+def save_chat_message(session_id: str, role: str, message: str) -> None:
+    with closing(sqlite3.connect(CHAT_DB_PATH, timeout=10)) as connection:
+        with connection:
+            connection.execute(
+                "CREATE TABLE IF NOT EXISTS chat_messages ("
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, session_id TEXT NOT NULL, "
+                "role TEXT NOT NULL, message TEXT NOT NULL)"
+            )
+            connection.execute(
+                "INSERT INTO chat_messages (session_id, role, message) VALUES (?, ?, ?)",
+                (session_id, role, message),
+            )
+
 def init_state() -> None:
     if "cart" not in st.session_state:
         st.session_state.cart = {}
-    if "chat_history" not in st.session_state:
-        st.session_state.chat_history = [{"role": "assistant", "text": "Assalam-o-alaikum! I’m your K-Town Barista. Ask me about the menu, prices, recommendations, or your cart."}]
+    if "chat_session_id" not in st.session_state:
+        st.session_state.chat_session_id = uuid4().hex
+    saved_history = load_chat_history(st.session_state.chat_session_id)
+    if saved_history:
+        st.session_state.chat_history = saved_history
+    elif "chat_history" in st.session_state:
+        # Preserve messages created before the temporary database was initialized.
+        for message in st.session_state.chat_history:
+            save_chat_message(st.session_state.chat_session_id, message["role"], message["text"])
+    else:
+        greeting = {"role": "assistant", "text": "Assalam-o-alaikum! I’m your K-Town Barista. Ask me about the menu, prices, recommendations, or your cart."}
+        st.session_state.chat_history = [greeting]
+        save_chat_message(st.session_state.chat_session_id, greeting["role"], greeting["text"])
     if "chat_input" not in st.session_state:
         st.session_state.chat_input = ""
     if "main_nav" not in st.session_state:
@@ -550,8 +594,10 @@ def handle_chat_prompt(prompt: str) -> None:
     if not cleaned:
         return
     st.session_state.chat_history.append({"role": "user", "text": cleaned})
+    save_chat_message(st.session_state.chat_session_id, "user", cleaned)
     reply = barista_reply(cleaned)
     st.session_state.chat_history.append({"role": "assistant", "text": reply})
+    save_chat_message(st.session_state.chat_session_id, "assistant", reply)
 
 
 def dismiss_chat() -> None:
@@ -561,7 +607,7 @@ def dismiss_chat() -> None:
 @st.dialog("K-Barista", on_dismiss=dismiss_chat)
 def chat_dialog() -> None:
     st.markdown('<div class="k-chat-header"><p>Earlier messages above · latest reply below</p></div>', unsafe_allow_html=True)
-    history = st.session_state.chat_history[-8:]
+    history = st.session_state.chat_history
     latest_pair = history[-2:] if len(history) >= 2 and history[-1].get("role") == "assistant" and history[-2].get("role") == "user" else history[-1:]
     earlier_messages = history[:-len(latest_pair)]
 
@@ -572,7 +618,8 @@ def chat_dialog() -> None:
         st.markdown(f'<div class="{bubble_class}"><strong>{html.escape(label)}</strong>{html.escape(str(message.get("text", "")))}</div>', unsafe_allow_html=True)
 
     if earlier_messages:
-        with st.container(height=150, border=False, key="chat_history_container"):
+        st.markdown(f'<div class="k-chat-header"><p>Earlier messages ({len(earlier_messages)})</p></div>', unsafe_allow_html=True)
+        with st.container(height=260, border=False, key="chat_history_container"):
             for message in earlier_messages:
                 render_message(message)
     for message in latest_pair:
