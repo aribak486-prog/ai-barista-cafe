@@ -48,7 +48,7 @@ CUSTOM_CSS = """
 :root { --ink:#121212; --amber:#D4AF37; --cream:#E6C280; --white:#F5F5F5; --muted:#B8B8B8; }
 .stApp { background:radial-gradient(ellipse at 82% 5%, rgba(212,175,55,.09), transparent 30%), #121212; color:var(--white); font-family:'DM Sans', sans-serif; }
 [data-testid="stHeader"] { background:rgba(18,18,18,.92); }
-[data-testid="stMainBlockContainer"] { max-width:1380px; padding-top:1.25rem; padding-bottom:calc(2rem + 72px + env(safe-area-inset-bottom)); }
+[data-testid="stMainBlockContainer"] { max-width:1380px; padding-top:1.75rem; padding-bottom:calc(2rem + 72px + env(safe-area-inset-bottom)); }
 h1,h2,h3 { font-family:'Playfair Display', serif !important; color:var(--white) !important; letter-spacing:.01em; }
 p,li,label,[data-testid="stMarkdownContainer"] { color:var(--white); }
 .eyebrow { color:var(--cream); letter-spacing:.19em; text-transform:uppercase; font-size:.72rem; font-weight:700; }
@@ -59,10 +59,10 @@ p,li,label,[data-testid="stMarkdownContainer"] { color:var(--white); }
 .stButton > button { border-radius:999px; border:1px solid rgba(212,175,55,.62); background:rgba(25,25,25,.88); color:var(--white); font-weight:700; min-height:2.65rem; transition:filter .15s ease,transform .15s ease; }
 .stButton > button:hover { color:var(--white); filter:brightness(1.08); border-color:var(--cream); transform:translateY(-1px); }
 .stButton > button:focus { box-shadow:0 0 0 .2rem rgba(212,175,55,.3); }
-.st-key-main_navigation { background:rgba(18,18,18,.96); border-bottom:1px solid rgba(255,255,255,.12); padding:.45rem .8rem .15rem; margin:-.5rem -.8rem .8rem; }
+.st-key-main_navigation { background:rgba(18,18,18,.96); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:.7rem 1rem .45rem; margin:0 0 1.2rem; }
 .st-key-main_navigation [data-testid="stHorizontalBlock"] { align-items:center; gap:.5rem; }
-.st-key-main_navigation .stButton > button { min-height:2.25rem; padding:.35rem .7rem; font-size:.88rem; line-height:1.15; white-space:nowrap; }
-.st-key-main_navigation [data-testid="stCaptionContainer"] { padding-top:.2rem; font-size:.74rem; line-height:1.2; }
+.st-key-main_navigation .stButton > button { min-height:2.7rem; padding:.45rem .75rem; font-size:.95rem; line-height:1.2; white-space:nowrap; }
+.st-key-main_navigation [data-testid="stCaptionContainer"] { padding-top:.3rem; font-size:.8rem; line-height:1.25; }
 .nav-pill { background: rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); }
 .nav-pill.active { background: rgba(212,175,55,.12); border-color: rgba(212,175,55,.32); }
 .hero { border:1px solid rgba(230,194,128,.2); border-radius:24px; padding:clamp(1.4rem,4vw,3.4rem); background:linear-gradient(120deg,rgba(31,29,25,.96),rgba(21,21,20,.91)); box-shadow:0 22px 65px rgba(0,0,0,.24); }
@@ -122,7 +122,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] { color:var(--cream); }
 .k-chat-header { padding-bottom:.55rem; border-bottom:1px solid rgba(255,255,255,.1); }
 .k-chat-header p { margin:0; color:var(--muted); font-size:.82rem; }
 .st-key-chat_close_button button { border-color:rgba(255,255,255,.16) !important; }
-.k-chat-message { display:block; border-radius:14px; padding:.7rem .9rem; margin:.5rem 0; max-width:88%; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; opacity:1 !important; filter:none !important; text-shadow:none !important; }
+.k-chat-message { display:block; border-radius:14px; padding:.7rem .9rem; margin:.5rem 0; max-width:96%; line-height:1.5; white-space:pre-wrap; overflow-wrap:anywhere; opacity:1 !important; filter:none !important; text-shadow:none !important; }
 .k-chat-message.user { margin-left:auto; background:#3b2d12 !important; border:1px solid #8a6b2c !important; color:#fff8e8 !important; }
 .k-chat-message.assistant { margin-right:auto; background:#24272b !important; border:1px solid #50565d !important; color:#f4f5f7 !important; }
 .k-chat-message.user *, .k-chat-message.user *:visited { color:#fff8e8 !important; opacity:1 !important; text-shadow:none !important; }
@@ -130,7 +130,7 @@ div[data-testid="stTabs"] button[aria-selected="true"] { color:var(--cream); }
 .k-chat-message.user strong, .k-chat-message.assistant strong { display:block !important; margin-bottom:.25rem !important; color:#f2d58a !important; }
 @media(max-width:768px) { [data-testid="stMainBlockContainer"]{padding:1rem .75rem calc(2rem + 72px + env(safe-area-inset-bottom))}.hero{padding:1.4rem;border-radius:18px}.hero h1{font-size:2.65rem}.menu-card{min-height:unset;margin-bottom:.25rem}.navhint{font-size:.75rem}.chat-msg{max-width:96%}.st-key-chat_fab_toggle{width:58px !important;height:58px !important;right:16px !important;bottom:calc(16px + env(safe-area-inset-bottom)) !important}.st-key-chat_fab_toggle button{width:58px !important;min-width:58px !important;height:58px !important;min-height:58px !important;max-height:58px !important}[data-testid="stDialog"]{padding:12px 12px calc(86px + env(safe-area-inset-bottom)) !important}[data-testid="stDialog"] > div{width:calc(100vw - 24px) !important;max-width:calc(100vw - 24px) !important;max-height:calc(100dvh - 116px - env(safe-area-inset-bottom)) !important}[data-testid="stDialog"] section[role="dialog"]{right:16px !important;bottom:calc(16px + 58px + 10px + env(safe-area-inset-bottom)) !important;width:calc(100vw - 32px) !important;max-width:calc(100vw - 32px) !important;max-height:calc(100dvh - 144px - env(safe-area-inset-bottom)) !important} }
 @media(max-width:420px) { .topbar{align-items:flex-start;flex-direction:column}.hero h1{font-size:2.25rem}.st-key-chat_fab_toggle{width:56px !important;height:56px !important;right:14px !important;bottom:calc(14px + env(safe-area-inset-bottom)) !important}.st-key-chat_fab_toggle button{width:56px !important;min-width:56px !important;height:56px !important;min-height:56px !important;max-height:56px !important}[data-testid="stDialog"]{padding-left:8px !important;padding-right:8px !important}[data-testid="stDialog"] > div{width:calc(100vw - 16px) !important;max-width:calc(100vw - 16px) !important}[data-testid="stDialog"] section[role="dialog"]{right:8px !important;bottom:calc(14px + 56px + 10px + env(safe-area-inset-bottom)) !important;width:calc(100vw - 16px) !important;max-width:calc(100vw - 16px) !important} }
-@media(max-width:600px) { .st-key-main_navigation { padding:.35rem .5rem .1rem; margin:-.35rem -.5rem .65rem; } .st-key-main_navigation [data-testid="stHorizontalBlock"] { gap:.3rem; } .st-key-main_navigation .stButton > button { min-height:2rem; padding:.25rem .35rem; font-size:.78rem; } .st-key-main_navigation .brandmark { font-size:1rem; } }
+@media(max-width:600px) { [data-testid="stMainBlockContainer"] { padding-top:1.25rem; } .st-key-main_navigation { padding:.65rem .65rem .4rem; margin:0 0 1rem; } .st-key-main_navigation [data-testid="stHorizontalBlock"] { gap:.3rem; } .st-key-main_navigation .stButton > button { min-height:2.45rem; padding:.35rem .4rem; font-size:.82rem; } .st-key-main_navigation .brandmark { font-size:1rem; } }
 </style>
 """
 
@@ -560,13 +560,24 @@ def dismiss_chat() -> None:
 
 @st.dialog("K-Barista", on_dismiss=dismiss_chat)
 def chat_dialog() -> None:
-    st.markdown('<div class="k-chat-header"><p>Newest messages appear first</p></div>', unsafe_allow_html=True)
-    with st.container(height=340, border=False, key="chat_history_container"):
-        for message in reversed(st.session_state.chat_history[-8:]):
-            role = message.get("role", "assistant")
-            label = "You" if role == "user" else "K-Barista"
-            bubble_class = "k-chat-message user" if role == "user" else "k-chat-message assistant"
-            st.markdown(f'<div class="{bubble_class}"><strong>{html.escape(label)}</strong>{html.escape(str(message.get("text", "")))}</div>', unsafe_allow_html=True)
+    st.markdown('<div class="k-chat-header"><p>Your latest reply stays in view</p></div>', unsafe_allow_html=True)
+    history = st.session_state.chat_history[-8:]
+    latest_pair = history[-2:] if len(history) >= 2 and history[-1].get("role") == "assistant" and history[-2].get("role") == "user" else history[-1:]
+    earlier_messages = history[:-len(latest_pair)]
+
+    def render_message(message: dict[str, str]) -> None:
+        role = message.get("role", "assistant")
+        label = "You" if role == "user" else "K-Barista"
+        bubble_class = "k-chat-message user" if role == "user" else "k-chat-message assistant"
+        st.markdown(f'<div class="{bubble_class}"><strong>{html.escape(label)}</strong>{html.escape(str(message.get("text", "")))}</div>', unsafe_allow_html=True)
+
+    for message in latest_pair:
+        render_message(message)
+    if earlier_messages:
+        st.markdown('<div class="k-chat-header"><p>Earlier messages</p></div>', unsafe_allow_html=True)
+        with st.container(height=150, border=False, key="chat_history_container"):
+            for message in reversed(earlier_messages):
+                render_message(message)
     prompt = st.chat_input("Ask K-Barista")
     if prompt:
         handle_chat_prompt(prompt)
